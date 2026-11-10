@@ -55,8 +55,10 @@ python3 -m unittest discover -s tools -p 'test_probe_honor_x7d_4g.py' -v
 
 The separate GitHub Actions workflow
 `.github/workflows/honor-firmware-tools.yml` checks JSON/Bash syntax and
-runs both suites on PRs or scoped pushes. The repo's existing Android build
-workflow is independent.
+runs both suites on PRs or scoped pushes. On PRs and manual dispatch it also
+uses `devcontainers/ci@v0.3` to **build the complete image** (including
+Features) and run the safe checks **inside** the container, without pushing
+an image to any registry. The repo's Android build is independent.
 
 The existing Rust `tools/extract_rs` is available for **offline analysis**
 within the workspace, but no exploit execution, device flashing, kernel offset
@@ -64,9 +66,11 @@ generation, firmware upload, or native-code changes are automated here.
 
 ## Verification limits
 
-The CI test validates Python behavior and configuration syntax, **not that
-the Docker image has successfully built** in Codespaces. The owner must
-instantiate a Codespace to confirm successful image/feature installation.
+The separate container-build job verifies whether the complete Dev Container
+image and Features can build on a GitHub runner. That job's actual status must
+be checked before claiming it passed. Even if it succeeds, **it does not
+create or prove a running Codespace** in the owner's account. The owner must
+instantiate a Codespace to verify account-specific launch and persistence.
 No physical-device gate or root-capability verification has been performed.
 
 **Explicit preservation:** no changes to the Android app, native exploit,
