@@ -10,7 +10,13 @@ HONOR's official product specification lists Snapdragon 685, MagicOS 9.0
 (Android 15), and 4G variants **LGN-LX1 / LGN-LX2 / LGN-LX3**.
 The similarly named X7d **5G (LGN-NX1)** must not be confused with the 4G
 device. One independent LGN-LX2 report lists kernel `5.15.180`; this is
-not the complete `uname -r` of the owner's phone.
+not the owner's firmware kernel. The owner now identifies the device as
+**LGN-L42**, MagicOS **9.0.0.226(C636E10R2P2)** in upstream
+[GhostLock issue #846](https://github.com/YuKongA/ghostlock-app/issues/846).
+The uploaded boot image contains the same reported kernel:
+`5.15.194-android13-8-00038-g853eb7b6b965-ab15936612`.
+These are candidate identification facts, **not proof of vulnerability or root**.
+See [the build-226 evidence review](honor-x7d-4g-226-evidence.md).
 
 At the time of this investigation, GhostLock's built-in
 `app/src/main/assets/kernel_profiles/index.conf` does not include a
