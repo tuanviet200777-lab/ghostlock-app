@@ -56,16 +56,18 @@ python3 -m unittest discover -s tools -p 'test_probe_honor_x7d_4g.py' -v
 ```
 
 `.github/workflows/honor-firmware-tools.yml` 在指定的代码更改及
-Pull Request 上检查 JSON/Bash 语法并运行 Python 测试，
-不依赖 Android 编译。Rust `tools/extract_rs` 已在仓库内，
+Pull Request 上检查 JSON/Bash 语法并运行 Python 测试；PR 和手动触发时
+还使用 `devcontainers/ci@v0.3` **构建完整容器及 Features，并在
+容器内运行只读测试**，不推送容器镜像。不依赖 Android 编译。Rust `tools/extract_rs` 已在仓库内，
 仅供**离线诊断**，本工作区不会自动执行漏洞利用、刷机、
 生成攻击偏移或上传 firmware。
 
 ## 验证范围
 
-CI 成功只代表脚本和语法检查通过，不证明 Codespace 容器镜像
-已经构建成功。必须由用户在 GitHub 上实际创建 Codespace 才能
-验证镜像与 Feature 安装。**未连接实体手机，也未验证 root。**
+独立的容器构建 job 用于确认 GitHub runner 能否构建完整镜像和 Features；
+只有查看其实际执行状态后才能声称通过。即使 job 成功，**也不表示
+机主的 Codespace 已经启动**。必须在 GitHub 上实际创建 Codespace 才能
+验证账号侧的工作区启动及数据生命周期。**未连接实体手机，也未验证 root。**
 
 **明确保持不变：** Android App、C++ native 漏洞利用、GLK1 协议、
 kernel profile、支持设备目录、`main`。
