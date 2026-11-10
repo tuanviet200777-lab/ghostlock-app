@@ -20,11 +20,13 @@ thời gian/dung lượng Codespaces tùy tài khoản.
 
 Dữ liệu của Codespace có đường dẫn tương ứng:
 
-- `/workspaces/ghostlock-private/firmware/`: đặt bản sao firmware đã xem xét.
-- `/workspaces/ghostlock-private/reports/`: lưu báo cáo JSON chỉ dùng nội bộ.
+- `/workspaces/ghostlock-app/.ghostlock-private/firmware/`: đặt bản sao firmware đã xem xét.
+- `/workspaces/ghostlock-app/.ghostlock-private/reports/`: lưu báo cáo JSON chỉ dùng nội bộ.
 
-Hai thư mục được tạo **ngoài cây repository** để lệnh `git add .` không
-vô tình đưa chúng vào PR. Đường dẫn `/workspaces` tồn tại qua việc rebuild
+Hai thư mục nằm **bên trong thư mục dự án nhưng được `.gitignore` loại trừ**.
+Cách này tránh lỗi quyền ghi ở `/workspaces` và ngăn `git add .` thông thường,
+nhưng không mã hóa dữ liệu và `git add -f` vẫn có thể đưa file lên Git.
+Thư mục dự án trong `/workspaces` thường tồn tại qua việc rebuild
 devcontainer nhưng **không phải bản sao lưu bảo đảm lâu dài**; xóa Codespace
 hoặc chính sách lưu trữ có thể làm mất dữ liệu.
 
@@ -39,10 +41,10 @@ Codespace, mở terminal (đang ở gốc repo) và chạy:
 
 ```bash
 python3 tools/inspect_honor_firmware.py \
-  --boot "/workspaces/ghostlock-private/firmware/boot(2).img" \
-  --vendor-boot "/workspaces/ghostlock-private/firmware/vendor_boot(2).img" \
-  --version-tag "/workspaces/ghostlock-private/firmware/version_by_CI(1).tag" \
-  --out "/workspaces/ghostlock-private/reports/x7d-226-offline.json"
+  --boot "/workspaces/ghostlock-app/.ghostlock-private/firmware/boot(2).img" \
+  --vendor-boot "/workspaces/ghostlock-app/.ghostlock-private/firmware/vendor_boot(2).img" \
+  --version-tag "/workspaces/ghostlock-app/.ghostlock-private/firmware/version_by_CI(1).tag" \
+  --out "/workspaces/ghostlock-app/.ghostlock-private/reports/x7d-226-offline.json"
 ```
 
 Kết quả gồm checksum SHA-256, định dạng ảnh và **chuỗi phiên bản kernel tìm
