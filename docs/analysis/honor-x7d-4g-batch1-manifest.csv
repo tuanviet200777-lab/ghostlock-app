@@ -1,0 +1,12 @@
+# HONOR X7d 4G firmware batch 1 (retrospective inventory)
+# 8 small files supplied in the first firmware batch, hashes calculated from the original uploads.
+# Text/header inspection only. Raw firmware/partition binaries have NOT been uploaded.
+sha256,bytes,category,filename
+7df913257ff7e117bb0dad237bd98c65a11e6c50c770f88db0d2d3888788bb37,8,metadata-tag,full_mainpkg(1).tag
+414f0cb2db67263ca6c72918010d87d131a7459dd6d74893b8132d7cb7314898,270336,partition-table-binary,gpt_both0(1).bin
+867f524182a990dff45e94dfbb2502e08301fef91eed17a904d0758218de9504,321,partition-metadata,PTABLE_SUPER(1).mbn
+6791bd9d4aa0d3e034efc48e3b8206e6ec39f65ae650063ba8b91908c97bf17e,19,metadata-tag,SD_update(1).tag
+9650101f4202b39eedb842df878c4b5b49a737262f5268065284d6ba0d3b81b8,24,version-metadata,SOFTWARE_VER(1).mbn
+7dcccacef20d851df2d28752e922bac1b0618a1158fd40e5a1dd51b908566f0a,50,version-metadata,SOFTWARE_VER_LIST(1).mbn
+e21c10e29ae61c2a0435f86c62de7f00f45dcf4f056dd4e6a0cd77a08bd7b4b9,11,metadata-tag,UPT_VER(1).tag
+acaafb84e0891c7bee1dbcab08597af35cccc1dc9ddd554b8a13f0087f634b0d,45,metadata-tag,version_by_CI(1).tag

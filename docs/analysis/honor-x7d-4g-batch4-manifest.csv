@@ -1,0 +1,17 @@
+# HONOR X7d 4G firmware batch 4: the final 12 uploads
+# Checked 2026-11-10. Hashes computed by reading the uploaded bytes in this conversation.
+# Header classification is magic-based only: no signature validation, verified provenance, or root success.
+# The actual binary images have NOT been uploaded to GitHub.
+sha256,bytes,header_format,filename
+eb3a96fc04b2867edcf10bb9cd2440be4513eef4dc8524d2349560d92e01f577,2368,AVB-vbmeta,vbmeta_vendor_dlkm.img
+f020f45afdd8abf6302d85f136ff639972a6b2556aa6f6e20df51b8996f4d226,2112,AVB-vbmeta,vbmeta_version.img
+04ebd28030893aa8724aac28d978100657b1344222156a1a62dd07f011107ea3,490086628,Android-sparse,vendor.img
+ca69717c62282e2eae9eb3254565633793d8bf66b264cf6c40f341af6d44129e,100663296,Android-vendor-boot,vendor_boot(2).img
+45cd245f623f9048b0ecfdaa505c7c1a3e402c1ce6c5e24369bea6a32e0d34c6,30060660,Android-sparse,vendor_dlkm.img
+a4f3990a5abef6b716e3f8faa1c8691a80f21886bb0250ed55a02413e4019e08,28784,Android-sparse,version.img
+79d5ce32b735096504830865820c229c72374d2c8022c8d312bfc419f2df8ec5,3224929,ELF,xbl(4).elf
+7664d8316eddaeed4f37f9923f8f36b26ae62b9d88174cef503e9d1c467ba216,43072,ELF,xbl_config(2).elf
+85ee307dc03d4417442405a7053a1c0b1d165a4174b811ae301eb554678ba4ab,2560,AVB-vbmeta,vbmeta_system.img
+0451dc8389d226b83a381f72dc652773be9302db37edb726640180921040510c,2368,AVB-vbmeta,vbmeta_system_dlkm.img
+3781fe181f1fe395b7f3384167d32f91aa2f2ea97897e8c79143d22418e7e1a2,2496,AVB-vbmeta,vbmeta_system_ext.img
+bc3f2d3f1d2168f8075109bf58918dd958efb0f0f361c264f9dfa8fd2a066bc8,2560,AVB-vbmeta,vbmeta_vendor.img
