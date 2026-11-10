@@ -82,20 +82,34 @@ kernel release is *not* proof of GhostLock/root support.
 ## Optional: compare with read-only data from the actual phone
 
 With Android platform-tools and USB debugging authorization, run on the
-computer connected to your own phone:
+Windows PC (or another computer) connected to your own phone. **Preferred
+minimal report:** this mode runs only `adb shell uname -r` after checking that
+one device is authorized. It does not query build fingerprint, model,
+private properties, or root status.
 
 ```sh
-python3 tools/probe_honor_x7d_4g.py > build/honor-x7d-device-private.json
+python3 tools/probe_honor_x7d_4g.py --minimal > build/honor-x7d-kernel-minimal.json
 ```
 
-Then compare the two independent sources:
+On Windows, use **Command Prompt (cmd.exe)** for this redirection: older Windows
+PowerShell versions can write UTF-16 output, not accepted by the UTF-8 JSON
+reader. Review any report before sharing. The original full-inventory mode
+(without `--minimal`) still exists but may include a build fingerprint.
+
+Then compare the two sources in the same local environment:
 
 ```sh
 python3 tools/inspect_honor_firmware.py \
   --boot "/path/to/boot(2).img" \
-  --device-report build/honor-x7d-device-private.json \
-  --out build/honor-x7d-compared-private.json
+  --device-report build/honor-x7d-kernel-minimal.json \
+  --out build/honor-x7d-compared-private.json \
+  --summary-out build/honor-x7d-compared-summary.txt
 ```
+
+With `--minimal`, `build_property_check` is `not_measured` and
+`build_version_present_in_adb_properties` is `null`, **not** evidence of
+a build mismatch. This mode measures only the kernel release. An invalid or
+missing release becomes `unknown`, not `mismatch`.
 
 The comparison field is one of `match`, `mismatch`, or `unknown`. `match`
 only means identical release **text**: it does not prove matching bytes,
