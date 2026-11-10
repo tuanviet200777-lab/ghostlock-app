@@ -150,7 +150,7 @@ def compare_device(report_path: Path, kernel_candidates: list[str], expected_bui
     # strings that might contain identifiers or multi-line private metadata.
     valid_release = (
         isinstance(release, str)
-        and re.fullmatch(r"[A-Za-z0-9][A-Za-z0-9._+\\-]{0,159}", release, re.ASCII)
+        and re.fullmatch(r"[A-Za-z0-9][A-Za-z0-9._+-]{0,159}", release, re.ASCII)
     )
     release = release if valid_release else ""
     if not release or not kernel_candidates:
