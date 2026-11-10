@@ -1,0 +1,26 @@
+# HONOR X7d 4G firmware batch 3: read-only upload inventory
+# Source: 20 files actually present in this chat on 2026-11-10.
+# Format identification uses ONLY the initial file magic. No authenticity or device-match claim.
+# SHA-256 of userdata.img withheld from public repository for privacy.
+# These are hashes of the uploaded files, not the files themselves.
+sha256,bytes,header_format,filename
+dd3d5ed90bafd5b570ede965e0d83e950c20d00195a69ea52a3b085400f8ad53,2112,AVB-vbmeta,vbmeta_product_h.img
+e45bc77facc3cb913d70869e600942db5cfa22117c65996fc51d2001ba3cb741,28784,Android-sparse,preload.img
+c10c6345df63663e1fef0bb5b3964e573432861c74f1cdac77f03ea1b778ed91,3629168,Android-sparse,product.img
+3861a91c26a944faff2b5ea7aa69ddabeba30ce14aa315bd77274f01cffc8369,57269,ELF,qupv3fw.elf
+3ccbe36316f4bcd254232038fd4630c6b70546f497b49f9d8151742743f5c630,67108864,Android-boot,recovery.img
+1fb48990da6fdadeb9e9b00934711de03610521d2670daaf533cdd319582bee2,225592,ELF,rpm.mbn
+30194971e9defb8d8d5213b58c30c67fbcb20676a2bf577f3d014bb76eeca4ea,36076,ELF,storsec.mbn
+877ce9a9e4884b0782c85ed7b4bae59bed131be2e7eebcb9ae7042709a21f36b,1048576,unknown-zero-prefix,super_metadata.img
+bafde2fec89856e8f1b6c47e82eec2145fcc5a5ccb5e5ee620e55b0a2b12a6b5,1163380,Android-sparse,system_dlkm.img
+3fe60e362a62a2f7c4bda7a15c43526d52efb4bf418d22e6329a1e18d7031e62,87867504,Android-sparse,system_ext.img
+9be6f184c06935e4988b91806ee96c2677d23cb9c6f9b3138ff05aa7a9567250,3514092,ELF,tz(1).mbn
+76f5c30b372350d73ca8d7ed7ab408ae28c9b522e39e68569a4ef478396c995e,168661,ELF,uefi_sec(3).mbn
+WITHHELD_PRIVATE,2416940,Android-sparse,userdata.img
+2073afc9a46e82b329a3b7c633dd4481a56f5b65ad2420bf7f4a558ba2c01b64,24576,AVB-vbmeta,vbmeta.img
+bc47b2df3ecbcd13ee85d9c716dc2622a88cd21da4e9df04a82c74aafbb58ed0,2112,AVB-vbmeta,vbmeta_cust.img
+21ea319791c02c814c2dd897aa97af4064daf21971f73b762dbc96ac08a7286a,2368,AVB-vbmeta,vbmeta_odm.img
+9b86c24ae0cd3ddad21fc47ed03b18da0a275ec3ff00fb78d41e897552e58aaf,2112,AVB-vbmeta,vbmeta_preas.img
+d7c6bde3ced26d0ee7ec0553ea2cdb9dfe76591ac3afd5b94524afee9d5917cb,2112,AVB-vbmeta,vbmeta_preavs.img
+d65c2ce819d81176a70aafc9fc15e9c68b438c5d0cca3be69635d9efbc27687a,2112,AVB-vbmeta,vbmeta_preload.img
+1621830e7c32f42606b55d70bd1f7e7b48afdd891475620eec85d8e324671c91,2112,AVB-vbmeta,vbmeta_product.img
