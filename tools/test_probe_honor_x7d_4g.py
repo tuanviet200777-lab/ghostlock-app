@@ -10,12 +10,18 @@ import probe_honor_x7d_4g as probe  # noqa: E402
 
 class VariantTests(unittest.TestCase):
     def test_4g_variants_are_candidates_not_proven_supported(self):
-        for variant in ("LGN-LX1", "LGN-LX2", "LGN-LX3"):
+        for variant in ("LGN-LX1", "LGN-LX2", "LGN-LX3", "LGN-L42"):
             with self.subTest(variant=variant):
                 self.assertEqual(
                     probe.classify_variant({"ro.product.vendor.model": variant}),
                     "x7d_4g_candidate_verify_model",
                 )
+
+    def test_malformed_l42_suffix_is_not_a_match(self):
+        self.assertEqual(
+            probe.classify_variant({"ro.product.model": "LGN-L420"}),
+            "unknown_device",
+        )
 
     def test_5g_variant_is_not_4g(self):
         self.assertEqual(
