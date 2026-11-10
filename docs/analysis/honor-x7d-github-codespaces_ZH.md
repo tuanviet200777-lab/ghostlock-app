@@ -10,9 +10,9 @@
 2. 点击 **Code → Codespaces → Create codespace on this branch**。
 3. GitHub 根据 `.devcontainer/devcontainer.json` 准备 Ubuntu 24.04、
    Python 3.12、Rust stable、Git LFS 及离线固件分析依赖。
-4. 创建后自动运行两个 Python 单元测试套件，并在 Git 检出目录之外建立：
-   `/workspaces/ghostlock-private/firmware/` 与
-   `/workspaces/ghostlock-private/reports/`。
+4. 创建后自动运行两个 Python 单元测试套件，并在 Git 检出目录内的 Git 忽略路径建立：
+   `/workspaces/ghostlock-app/.ghostlock-private/firmware/` 与
+   `/workspaces/ghostlock-app/.ghostlock-private/reports/`。
 
 当前提交的是**工作区配置**，不是已经在机主账号内启动的 Codespace。
 现有 GitHub 连接不具备创建或控制 Codespace 的功能。
@@ -22,8 +22,9 @@ Codespaces 使用时间和存储可能收费，请检查个人账号配额。
 
 仅处理经检查并有权使用的文件。不要上传 `userdata.img`、
 `metadata.img`、`cache.img`、密钥分区或含个人资料的原始镜像。
-工作区在 GitHub 云端运行；私有目录降低误提交风险，但**不是保密
-保险箱或永久备份**。GitHub 文档说明 `/workspaces` 在容器重建后
+工作区在 GitHub 云端运行；私有目录位于仓库检出目录内但已被根目录
+`.gitignore` 忽略，避免普通 `git add .` 的误提交；使用 `git add -f`
+依然可能上传。此设置**不是加密或永久备份**。GitHub 文档说明 `/workspaces` 在容器重建后
 保留，但删除 Codespace 或存储保留政策仍可能删除数据。
 
 机主已在本对话中确认 **MagicOS 9.0.0.226**。此前误发的 GitHub
@@ -42,10 +43,10 @@ Codespaces 使用时间和存储可能收费，请检查个人账号配额。
 
 ```bash
 python3 tools/inspect_honor_firmware.py \
-  --boot "/workspaces/ghostlock-private/firmware/boot(2).img" \
-  --vendor-boot "/workspaces/ghostlock-private/firmware/vendor_boot(2).img" \
-  --version-tag "/workspaces/ghostlock-private/firmware/version_by_CI(1).tag" \
-  --out "/workspaces/ghostlock-private/reports/x7d-226-offline.json"
+  --boot "/workspaces/ghostlock-app/.ghostlock-private/firmware/boot(2).img" \
+  --vendor-boot "/workspaces/ghostlock-app/.ghostlock-private/firmware/vendor_boot(2).img" \
+  --version-tag "/workspaces/ghostlock-app/.ghostlock-private/firmware/version_by_CI(1).tag" \
+  --out "/workspaces/ghostlock-app/.ghostlock-private/reports/x7d-226-offline.json"
 ```
 
 离线 Python 测试：
