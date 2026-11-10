@@ -106,12 +106,15 @@ class ProbeTests(unittest.TestCase):
         from contextlib import redirect_stdout
 
         output = io.StringIO()
-        with patch.object(probe, "select_serial", return_value="private-serial"), \\
-                patch.object(probe, "collect_minimal", return_value={
-                    "schema": "honor-x7d-4g-readonly-v1", "kernel_release": "5.15.194-test",
-                    "properties": {}, "support_status": "UNVERIFIED_DO_NOT_RUN_EXPLOIT"
-                }) as minimal, \\
-                patch.object(probe, "collect") as full, redirect_stdout(output):
+        with (
+            patch.object(probe, "select_serial", return_value="private-serial"),
+            patch.object(probe, "collect_minimal", return_value={
+                "schema": "honor-x7d-4g-readonly-v1", "kernel_release": "5.15.194-test",
+                "properties": {}, "support_status": "UNVERIFIED_DO_NOT_RUN_EXPLOIT"
+            }) as minimal,
+            patch.object(probe, "collect") as full,
+            redirect_stdout(output),
+        ):
             self.assertEqual(probe.main(["--minimal"]), 0)
         minimal.assert_called_once_with("private-serial")
         full.assert_not_called()
