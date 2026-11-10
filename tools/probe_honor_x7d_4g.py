@@ -86,7 +86,7 @@ def classify_variant(properties: dict[str, str]) -> str:
     ).upper()
     if re.search(r"LGN-NX[0-9]+", identity):
         return "not_x7d_4g_candidate"
-    if re.search(r"LGN-LX[123]", identity):
+    if re.search(r"LGN-(?:LX[123]|L42)(?![A-Z0-9])", identity):
         return "x7d_4g_candidate_verify_model"
     if "X7D" in identity:
         return "x7d_variant_unknown"
