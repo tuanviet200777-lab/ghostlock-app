@@ -72,21 +72,34 @@ kernel profiles、GLK1、设备支持名单。版本字符串匹配不能证明 
 
 ## 可选：用实际手机的只读 ADB 报告对照
 
-电脑安装 Android platform-tools，连接机主自己的手机，
-并完成 USB 调试授权后：
+在 Windows 电脑安装 Android platform-tools，并授权自己的手机使用 USB
+调试后，**推荐使用最小化报告**：仅运行 `adb devices` 确认连接，
+然后只读执行 `adb shell uname -r`；不会读取 build fingerprint、
+机型属性、账户或 root 状态。
 
-§§§sh
-python3 tools/probe_honor_x7d_4g.py > build/honor-x7d-device-private.json
-§§§
+```sh
+python3 tools/probe_honor_x7d_4g.py --minimal > build/honor-x7d-kernel-minimal.json
+```
 
-随后离线比对：
+在 Windows 上建议使用 **cmd.exe（命令提示符）** 执行上述重定向，
+旧版 PowerShell 可能使用 UTF-16 写入，而比对工具要求 UTF-8。
+分享前仍应检查报告。若确实需要完整库存信息，可以省略
+`--minimal`，但旧模式可能读取 build fingerprint。
 
-§§§sh
+随后在本地比较：
+
+```sh
 python3 tools/inspect_honor_firmware.py \
   --boot "/path/to/boot(2).img" \
-  --device-report build/honor-x7d-device-private.json \
-  --out build/honor-x7d-compared-private.json
-§§§
+  --device-report build/honor-x7d-kernel-minimal.json \
+  --out build/honor-x7d-compared-private.json \
+  --summary-out build/honor-x7d-compared-summary.txt
+```
+
+最小化报告中 `build_property_check` 为 `not_measured`、
+`build_version_present_in_adb_properties` 为 `null`，并不代表
+MagicOS 版本不匹配；该模式没有读取系统版本属性。非法或缺失的
+内核版本文本会被标为 `unknown`，不复制可疑原始文本。
 
 §kernel_release_match§ 的结果为 §match§、§mismatch§ 或 §unknown§。
 §match§ 只能说明版本字符串一致，**不能证明**二进制完全相同、
