@@ -18,7 +18,9 @@ modifying a phone, bootloader, or GhostLock's native execution pipeline.
 - `.devcontainer/post-create.sh`: initialize persistent workspace-private
   data directories, and run existing Python tests.
 - `.github/workflows/honor-firmware-tools.yml`: CI checks Python tools and
-  validates devcontainer JSON; this is independent of the Android build.
+  validates devcontainer JSON; a separate **PR/manual-only** job now builds
+  the full Dev Container with its Features and runs safe Python tests inside
+  it (no image push; independent of the Android build).
 - `docs/analysis/honor-x7d-github-codespaces.md`: usage, boundaries and
   privacy handling; `_ZH.md` translation.
 - `.devcontainer/README.md`: Vietnamese Codespaces quick-start and privacy rules.
@@ -62,7 +64,8 @@ probe, Rust extractor logic, or Android/native GhostLock code.
 | Bash syntax | `.devcontainer/post-create.sh` | Valid shell syntax |
 | Python unittest | `test_inspect_honor_firmware.py` and `test_probe_honor_x7d_4g.py` | Offline parsing and read-only data contracts |
 | GitHub Actions | Dedicated Python workflow | Confirms commands run on the GitHub runner |
-| Codespace creation | Manually launch on feature branch | Required to confirm image/features actually install |
+| Dev Container CI build | PR/manual `devcontainers/ci@v0.3`, `push: never` | Confirms image/features work in GitHub runner, no real Codespace launched |
+| Codespace creation | Manually launch on feature branch | Required to confirm Codespaces account creation, volumes, and lifecycle |
 | Repository diff | PR #3 compare | Only listed config/docs/workflow files changed |
 
 Evidence: record run links/results only after the tools actually execute.
