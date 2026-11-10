@@ -10,8 +10,8 @@ See [Vietnamese quick-start](../../.devcontainer/README.md) and
 3. GitHub builds `.devcontainer/devcontainer.json` (Ubuntu 24.04, Python 3.12,
    Rust stable, Git LFS, and offline analysis utilities).
 4. The post-create script runs the two Python test suites and creates
-   `/workspaces/ghostlock-private/firmware/` and
-   `/workspaces/ghostlock-private/reports/` **outside the Git checkout**.
+   `/workspaces/ghostlock-app/.ghostlock-private/firmware/` and
+   `/workspaces/ghostlock-app/.ghostlock-private/reports/` **inside the writable checkout but excluded by the root `.gitignore`**.
 
 The branch currently has a prepared configuration, not a guaranteed already
 running Codespace. This GitHub connector does not create or control Codespaces
@@ -21,8 +21,8 @@ in the owner's account. Codespaces may incur usage/storage charges.
 Only inspect files whose origin and permission to process have been checked.
 Do **not** upload `userdata.img`, `metadata.img`, `cache.img`, secrets,
 key partitions, or raw personal dumps. Codespace storage is hosted remotely;
-the private directory reduces accidental Git commits but is not encryption or
-a backup guarantee. GitHub documents that `/workspaces` persists on container
+the Git-ignored private directory reduces accidental Git commits but is not
+encryption or a backup guarantee. Forced Git additions can still publish data. GitHub documents that `/workspaces` persists on container
 rebuild; deletion or retention policy may still remove the workspace.
 
 The owner confirmed **MagicOS 9.0.0.226**. A previous mistaken GitHub device
@@ -40,10 +40,10 @@ run from the Codespace terminal in the repository root:
 
 ```bash
 python3 tools/inspect_honor_firmware.py \
-  --boot "/workspaces/ghostlock-private/firmware/boot(2).img" \
-  --vendor-boot "/workspaces/ghostlock-private/firmware/vendor_boot(2).img" \
-  --version-tag "/workspaces/ghostlock-private/firmware/version_by_CI(1).tag" \
-  --out "/workspaces/ghostlock-private/reports/x7d-226-offline.json"
+  --boot "/workspaces/ghostlock-app/.ghostlock-private/firmware/boot(2).img" \
+  --vendor-boot "/workspaces/ghostlock-app/.ghostlock-private/firmware/vendor_boot(2).img" \
+  --version-tag "/workspaces/ghostlock-app/.ghostlock-private/firmware/version_by_CI(1).tag" \
+  --out "/workspaces/ghostlock-app/.ghostlock-private/reports/x7d-226-offline.json"
 ```
 
 For offline unit tests:
