@@ -21,7 +21,8 @@ Rust 与离线分析依赖；**不会执行 root、漏洞利用、刷机或设�
   运行现有 Python 测试。
 - `.devcontainer/README.md`：越南语操作与隐私提示。
 - `.github/workflows/honor-firmware-tools.yml`：只读 Python 工具的
-  测试及 Dev Container 配置语法检查。
+  测试及 Dev Container 配置语法检查；还增加仅在 PR / 手动触发时运行的真实镜像构建，
+  通过 `devcontainers/ci@v0.3` 安装 Features、运行只读测试，`push: never` 不发布容器镜像。
 - `docs/analysis/honor-x7d-github-codespaces.md` 与 `_ZH.md`：
   操作、保密和边界。
 - `docs/analysis/honor-x7d-github-codespaces-plan.md` 与本文件：
@@ -61,6 +62,7 @@ GLK1 wire 格式、支持机型名单。
 | Python 单元测试 | `test_inspect_honor_firmware.py`、
 `test_probe_honor_x7d_4g.py` |
 | GitHub Actions | 查看 PR 对应检查的实际结果 |
+| Dev Container CI 构建 | 在 runner 上构建完整镜像并运行无设备测试，不代表实际创建 Codespace |
 | 真正创建 Codespace | 由机主在 GitHub 上启动后验证 Feature 安装 |
 | Git diff | 确认仅修改上述工具/文档配置，不影响 native |
 
