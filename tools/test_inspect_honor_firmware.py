@@ -197,5 +197,37 @@ class FirmwareInspectorTests(unittest.TestCase):
 
 
 
+    def test_minimal_adb_report_matches_kernel_without_build_properties(self):
+        img = self.fixture_boot()
+        device = self.folder / "minimal.json"
+        device.write_text(json.dumps({
+            "schema": "honor-x7d-4g-readonly-v1",
+            "kernel_release": "5.15.194-test-kernel",
+            "properties": {},
+        }), encoding="utf-8")
+        comparison = tool.compare_device(
+            device, tool.inspect_boot(img)["kernel"]["release_candidates"], "9.0.0.226"
+        )
+        self.assertEqual(comparison["kernel_release_match"], "match")
+        self.assertEqual(comparison["build_property_check"], "not_measured")
+        self.assertIsNone(comparison["build_version_present_in_adb_properties"])
+        self.assertFalse(comparison["private_device_properties_copied"])
+
+    def test_untrusted_adb_release_is_sanitized_before_copying(self):
+        device = self.folder / "potentially_sensitive.json"
+        device.write_text(json.dumps({
+            "schema": "honor-x7d-4g-readonly-v1",
+            "kernel_release": "5.15.194\\nSERIAL-PRIVATE-DONT-COPY",
+            "properties": {"ro.build.fingerprint": "PRIVATE-FINGERPRINT"},
+        }), encoding="utf-8")
+        comparison = tool.compare_device(device, ["5.15.194"], "9.0.0.226")
+        self.assertEqual(comparison["kernel_release_match"], "unknown")
+        self.assertIsNone(comparison["device_kernel_release"])
+        self.assertNotIn("SERIAL-PRIVATE", json.dumps(comparison))
+        self.assertNotIn("PRIVATE-FINGERPRINT", json.dumps(comparison))
+        self.assertEqual(comparison["build_property_check"], "not_measured")
+
+
+
 if __name__ == "__main__":
     unittest.main()
