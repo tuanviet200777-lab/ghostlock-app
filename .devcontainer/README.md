@@ -44,8 +44,14 @@ python3 tools/inspect_honor_firmware.py \
   --boot "/workspaces/ghostlock-app/.ghostlock-private/firmware/boot(2).img" \
   --vendor-boot "/workspaces/ghostlock-app/.ghostlock-private/firmware/vendor_boot(2).img" \
   --version-tag "/workspaces/ghostlock-app/.ghostlock-private/firmware/version_by_CI(1).tag" \
-  --out "/workspaces/ghostlock-app/.ghostlock-private/reports/x7d-226-offline.json"
+  --out "/workspaces/ghostlock-app/.ghostlock-private/reports/x7d-226-offline.json" \
+  --summary-out "/workspaces/ghostlock-app/.ghostlock-private/reports/x7d-226-evidence.txt"
 ```
+
+Bổ sung: `--summary-out` tạo báo cáo chữ dễ đọc tại thư mục `reports/`,
+cho biết đang **chỉ có chứng cứ từ file** hay đã đối chiếu chuỗi kernel
+với báo cáo ADB. Dù chuỗi phiên bản trùng nhau, trạng thái hỗ trợ
+GhostLock/root vẫn là **CHƯA KIỂM CHỨNG**; không tự động cài APK hay root.
 
 Kết quả gồm checksum SHA-256, định dạng ảnh và **chuỗi phiên bản kernel tìm
 thấy trong boot image**. Không coi đó là `uname -r` đo trực tiếp trên điện
