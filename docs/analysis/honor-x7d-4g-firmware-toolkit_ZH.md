@@ -50,6 +50,26 @@ AVB 标识检查也**不等于验证数字签名**。
 但其他镜像也可能包含私有或受版权保护的内容，禁止未经检查
 就发布到公开仓库。
 
+## 设计：最小化设备内核版本检查（M 级）
+
+**原因：** 原 ADB 诊断会读取较多设备属性，包括 build fingerprint，
+但当前仅需要手机实际运行的内核 release 字符串。应避免不必要的数据收集。
+
+**范围：** `tools/probe_honor_x7d_4g.py` 新增可选 `--minimal`，
+仅运行 `adb devices`（确认设备已授权）及
+`adb shell uname -r`（只读内核版本）。`tools/inspect_honor_firmware.py`
+将“未读取系统版本属性”和“明确不匹配”区分，并拒绝不安全的内核
+版本字符串。更新对应的 Python 单元测试与英/中文说明文档。
+保持旧的完整报告默认行为与 v1 schema，不要求 root、不写入设备。
+
+**验证：** 使用 mock 确认只发出允许的 ADB 命令；
+测试 match/mismatch/unknown，确认非法字符串不会进入输出；
+GitHub Actions 运行两个 Python 测试组及 Dev Container 构建。
+CI 不连接真实手机。
+
+**明确保持不变：** Android APK、Rust extractor、C++ 漏洞利用、
+kernel profiles、GLK1、设备支持名单。版本字符串匹配不能证明 root。
+
 ## 可选：用实际手机的只读 ADB 报告对照
 
 电脑安装 Android platform-tools，连接机主自己的手机，
