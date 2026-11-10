@@ -17,7 +17,8 @@ Rust 与离线分析依赖；**不会执行 root、漏洞利用、刷机或设�
 - `.devcontainer/devcontainer.json`：Codespaces、Python 3.12、
   Rust stable、Git LFS。
 - `.devcontainer/Dockerfile`：Ubuntu 24.04 与只读分析依赖。
-- `.devcontainer/post-create.sh`：初始化与 Git 分离的私有数据目录，
+- `.gitignore`：忽略 `.ghostlock-private/` 目录，防止误提交。
+- `.devcontainer/post-create.sh`：初始化 Git 忽略的本地数据目录，
   运行现有 Python 测试。
 - `.devcontainer/README.md`：越南语操作与隐私提示。
 - `.github/workflows/honor-firmware-tools.yml`：只读 Python 工具的
@@ -35,9 +36,10 @@ GLK1 wire 格式、支持机型名单。
 
 1. 机主在 GitHub 的 PR #3 功能分支创建 Codespace。
 2. 容器安装 Python、Rust、基础构建及固件头部分析所需软件。
-3. postCreate 在 `/workspaces/ghostlock-private/` 下创建
-   `firmware/`、`reports/`，它们**不属于仓库 Git 检出目录**，
-   因而不会被根目录中的 `git add .` 意外提交。
+3. postCreate 在 `/workspaces/ghostlock-app/.ghostlock-private/` 下创建
+   `firmware/`、`reports/`，它们**属于仓库检出目录，但由根目录 `.gitignore` 忽略**，
+   防止普通 `git add .` 意外提交；`git add -f` 仍可绕过忽略规则。
+   此设计修复 `vscode` 用户无法在 `/workspaces` 根目录创建兄弟目录的权限问题。
 4. 用户只上传经确认允许处理的固件文件；不上传
    `userdata.img`、密钥分区、隐私 dump。
 5. 现有只读 inspector 生成 JSON 报告，仅保留于私有目录。
