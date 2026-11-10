@@ -21,6 +21,9 @@ modifying a phone, bootloader, or GhostLock's native execution pipeline.
   validates devcontainer JSON; this is independent of the Android build.
 - `docs/analysis/honor-x7d-github-codespaces.md`: usage, boundaries and
   privacy handling; `_ZH.md` translation.
+- `.devcontainer/README.md`: Vietnamese Codespaces quick-start and privacy rules.
+- `docs/analysis/honor-x7d-github-codespaces_ZH.md`: Chinese usage translation.
+- `docs/analysis/honor-x7d-github-codespaces-plan_ZH.md`: Chinese design record.
 - This design record.
 
 No changes to `tools/inspect_honor_firmware.py`, the original read-only ADB
