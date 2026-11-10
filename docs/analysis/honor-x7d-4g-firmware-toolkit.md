@@ -55,6 +55,30 @@ The tool rejects specific potentially private files including `userdata.img`,
 `metadata.img`, `cache.img`, `persist.img`, and key-related partitions. Its
 allowlist is *not* a guarantee that all other firmware is safe to publish.
 
+## Design: minimal on-device kernel check (M-level)
+
+**Motivation:** The existing ADB inventory reads many build properties,
+including a fingerprint, although the immediate missing evidence is only the
+live kernel release. It is too easy to share more device details than needed.
+
+**Scope:** `tools/probe_honor_x7d_4g.py` gains an opt-in `--minimal` path,
+reading only `adb devices` for authorization and `adb shell uname -r` for
+kernel identity; `tools/inspect_honor_firmware.py` distinguishes missing
+build properties from an observed mismatch and rejects unsafe release strings.
+Their two Python unit-test files and English/Chinese documentation are
+updated. No new schema version, network calls, physical writes, or additional
+privileges. Default full-probe behavior remains unchanged.
+
+**Evidence and verification:** Test minimal output contracts and the exact
+allowed ADB commands with mocks, verify malformed kernel strings are never
+copied, and exercise `match/mismatch/unknown` with synthetic records. Run
+both Python test suites in GitHub Actions and the Dev Container build job;
+report only observed outcomes. The device itself cannot be tested by CI.
+
+**Explicit preservation:** No changes to Android APK, Rust extractor,
+C++/root code, kernel profiles, GLK1, or device support catalog. A matching
+kernel release is *not* proof of GhostLock/root support.
+
 ## Optional: compare with read-only data from the actual phone
 
 With Android platform-tools and USB debugging authorization, run on the
