@@ -21,11 +21,12 @@ Header recognition alone does **not** cryptographically validate firmware.
 
 ## Where things stand after four incoming batches
 
-- Batch 1: initial firmware metadata uploads; **not yet indexed by a batch-1 manifest**.
+- Batch 1: 8 metadata / partition-table uploads; recorded in `batch1-manifest.csv` (270,814 bytes).
 - Batch 2: 20 binary uploads; recorded in `batch2-manifest.csv` (292,834,349 bytes).
 - Batch 3: 20 binary uploads; recorded in `batch3-manifest.csv` (167,304,522 bytes).
 - Batch 4: final 12 binary uploads; recorded in `batch4-manifest.csv` (624,121,833 bytes).
-- Batches 2–4 **combined inventory:** 52 file records, 1,084,260,704 bytes.
+- **All four batches combined:** 60 file records, 1,084,531,518 bytes (about 1,034.29 MiB).
+- Version metadata in batch 1 contains more than one build number, so a full matching stock firmware identity is still not established.
 
 **None of these firmware binary uploads has been pushed to this GitHub repository.**
 Only small, human-readable manifests and notes are versioned; the GitHub
