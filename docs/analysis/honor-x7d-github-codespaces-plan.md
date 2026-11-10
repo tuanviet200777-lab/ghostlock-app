@@ -15,6 +15,7 @@ modifying a phone, bootloader, or GhostLock's native execution pipeline.
   Ubuntu 24.04 base, Python 3.12, Rust stable, and Git LFS features.
 - `.devcontainer/Dockerfile`: OS tools for offline firmware analysis
   (build chain, lz4, zstd, file, and archive utilities).
+- `.gitignore`: ignore local `.ghostlock-private/` input and report directory.
 - `.devcontainer/post-create.sh`: initialize persistent workspace-private
   data directories, and run existing Python tests.
 - `.github/workflows/honor-firmware-tools.yml`: CI checks Python tools and
@@ -34,9 +35,11 @@ probe, Rust extractor logic, or Android/native GhostLock code.
 ## Intended behavior
 1. Owner launches Codespace on the PR #3 **feature branch**.
 2. Dev container prepares Python, Rust, and offline inspection utilities.
-3. `postCreateCommand` creates `/workspaces/ghostlock-private/{firmware,reports}`
-   **outside the checked-out repository** so raw images cannot be staged
-   accidentally from the repository root. The directory is persistent
+3. `postCreateCommand` creates `/workspaces/ghostlock-app/.ghostlock-private/{firmware,reports}`
+   **inside the checked-out repository but ignored by root `.gitignore`**,
+   since the default `vscode` user lacks permission to create sibling directories
+   under `/workspaces` in the CI container. Ordinary `git add .` excludes it,
+   but forced additions can bypass the ignore rule. The directory is persistent
    across container rebuilds but not a backup service or secret vault.
 4. Optional firmware is provided by the owner through Codespaces file upload;
    do not upload `userdata.img`, sensitive partitions, or unreviewed dumps.
