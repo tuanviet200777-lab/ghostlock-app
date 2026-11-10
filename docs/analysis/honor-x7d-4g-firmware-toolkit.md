@@ -34,8 +34,15 @@ python3 tools/inspect_honor_firmware.py \
   --version-tag "/path/to/version_by_CI(1).tag" \
   --image "/path/to/vbmeta.img" \
   --image "/path/to/vendor_dlkm.img" \
-  --out build/honor-x7d-4g-local-report.json
+  --out build/honor-x7d-4g-local-report.json \
+  --summary-out build/honor-x7d-identity-summary.txt
 ```
+
+The optional `--summary-out` creates a short, human-readable Vietnamese
+identity summary alongside the original JSON. Its status is **file-only**
+without a separately acquired ADB report; if supplied, a matching kernel
+release is **only a string match**, not proof that GhostLock works. The
+summary never copies raw ADB properties or device identifiers.
 
 The `build/` directory is already ignored by Git. The output is JSON with
 SHA-256 checksums, file/header details and a **candidate** kernel release.
