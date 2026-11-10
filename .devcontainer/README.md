@@ -74,7 +74,8 @@ cứu offline; setup Codespaces **không tự build hoặc chạy khai thác ker
 ## Mức độ hoàn tất
 
 - Đã commit cấu hình Dev Container, Dockerfile, startup script và GitHub
-  Actions CI cho Python.
+  Actions CI cho Python; thêm job CI tạo image Dev Container thật và chạy
+  kiểm thử an toàn bên trong (chỉ trên PR hoặc chạy thủ công; không đẩy image).
 - Chưa trực tiếp tạo Codespace trên tài khoản của bạn: phải mở Codespaces
   trên GitHub theo bước trên.
 - Chưa có firmware nhị phân được đẩy vào repo, và chưa kết nối điện thoại.
