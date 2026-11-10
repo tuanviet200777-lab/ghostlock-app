@@ -30,8 +30,14 @@ python3 tools/inspect_honor_firmware.py \
   --version-tag "/path/to/version_by_CI(1).tag" \
   --image "/path/to/vbmeta.img" \
   --image "/path/to/vendor_dlkm.img" \
-  --out build/honor-x7d-4g-local-report.json
+  --out build/honor-x7d-4g-local-report.json \
+  --summary-out build/honor-x7d-identity-summary.txt
 §§§
+
+可选的 §--summary-out§ 会另外保存一份越南语可读的证据摘要；
+不改变原始 JSON。没有实体手机的 ADB 数据时，摘要标为“尚未比对”；
+即使内核版本字符串一致，也**不能证明 GhostLock 支持 root**。
+该摘要不会复制 ADB 原始属性或私有标识符。
 
 §build/§ 已列入 Git 忽略规则。工具提取文件大小、SHA-256、
 部分头部字段以及 kernel 中可能存在的 §Linux version§ 字符串。
