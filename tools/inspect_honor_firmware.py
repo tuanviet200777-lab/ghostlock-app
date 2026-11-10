@@ -146,21 +146,31 @@ def compare_device(report_path: Path, kernel_candidates: list[str], expected_bui
     if not isinstance(data, dict) or data.get("schema") != "honor-x7d-4g-readonly-v1":
         raise ValueError("unexpected device report schema")
     release = data.get("kernel_release")
-    if not isinstance(release, str):
-        release = ""
+    # A device report may come from outside this tool. Never echo arbitrary
+    # strings that might contain identifiers or multi-line private metadata.
+    valid_release = (
+        isinstance(release, str)
+        and re.fullmatch(r"[A-Za-z0-9][A-Za-z0-9._+\\-]{0,159}", release, re.ASCII)
+    )
+    release = release if valid_release else ""
     if not release or not kernel_candidates:
         kernel_match = "unknown"
     else:
         kernel_match = "match" if release in kernel_candidates else "mismatch"
     props = data.get("properties")
     props = props if isinstance(props, dict) else {}
-    candidate_fields = [props.get("ro.build.display.id"), props.get("ro.build.version.incremental")]
-    version_found = any(isinstance(value, str) and expected_build in value for value in candidate_fields)
+    version_keys = ("ro.build.display.id", "ro.build.version.incremental")
+    measured = any(key in props for key in version_keys)
+    candidate_fields = [props.get(key) for key in version_keys]
+    version_found = (
+        any(isinstance(value, str) and expected_build in value for value in candidate_fields)
+        if measured else None
+    )
     return {
         "device_kernel_release": release or None,
         "kernel_release_match": kernel_match,
         "build_version_present_in_adb_properties": version_found,
-        "build_property_check": "advisory_only",
+        "build_property_check": "advisory_only" if measured else "not_measured",
         "private_device_properties_copied": False,
     }
 
