@@ -1,6 +1,6 @@
 # SHA-256 and file lengths of 20 user-supplied HONOR X7d firmware candidates (batch 2)
 # Recorded 2026-11-10. Hashes computed from uploads; not signature/identity verification.
-# sha256,bytes,filename
+sha256,bytes,filename
 15220906eebe9ee73359bda73015d6ae020b1fd65d72b229b4cc345cfdfd5eb7,8388608,init_boot.img
 110d872ca5e80c513b464d8821c19159c6965b29a3022943ce789a20b7a8bc2b,350726,keymint.mbn
 080acf35a507ac9849cfcba47dc2ad83e01b75663a516279c8b9d243b719643e,16777216,kpatch.img
