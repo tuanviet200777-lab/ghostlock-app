@@ -78,5 +78,47 @@ class ProbeTests(unittest.TestCase):
             self.assertNotIn(fragment, keys)
 
 
+    def test_minimal_probe_only_reads_kernel_release(self):
+        calls = []
+
+        def fake_adb(args, serial=None):
+            calls.append((tuple(args), serial))
+            return "5.15.194-android13-8-00038-g853eb7b6b965-ab15936612"
+
+        with patch.object(probe, "adb", side_effect=fake_adb):
+            report = probe.collect_minimal("private-device-serial")
+        self.assertEqual(calls, [(("shell", "uname", "-r"), "private-device-serial")])
+        self.assertEqual(report["schema"], "honor-x7d-4g-readonly-v1")
+        self.assertEqual(report["properties"], {})
+        self.assertEqual(report["variant_classification"], "not_measured")
+        self.assertEqual(report["support_status"], "UNVERIFIED_DO_NOT_RUN_EXPLOIT")
+        self.assertNotIn("private-device-serial", str(report))
+
+    def test_minimal_probe_rejects_unsafe_release_text(self):
+        for raw in ("imei=not-a-kernel", "5.15.194\\nsecret", "5.15.194\\private", ""):
+            with self.subTest(raw=raw), patch.object(probe, "adb", return_value=raw):
+                with self.assertRaisesRegex(RuntimeError, "invalid kernel release"):
+                    probe.collect_minimal("device-private")
+
+    def test_cli_minimal_uses_only_minimal_collector(self):
+        import io
+        import json
+        from contextlib import redirect_stdout
+
+        output = io.StringIO()
+        with patch.object(probe, "select_serial", return_value="private-serial"), \\
+                patch.object(probe, "collect_minimal", return_value={
+                    "schema": "honor-x7d-4g-readonly-v1", "kernel_release": "5.15.194-test",
+                    "properties": {}, "support_status": "UNVERIFIED_DO_NOT_RUN_EXPLOIT"
+                }) as minimal, \\
+                patch.object(probe, "collect") as full, redirect_stdout(output):
+            self.assertEqual(probe.main(["--minimal"]), 0)
+        minimal.assert_called_once_with("private-serial")
+        full.assert_not_called()
+        self.assertEqual(json.loads(output.getvalue())["kernel_release"], "5.15.194-test")
+        self.assertNotIn("private-serial", output.getvalue())
+
+
+
 if __name__ == "__main__":
     unittest.main()
