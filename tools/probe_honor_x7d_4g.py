@@ -95,7 +95,7 @@ def classify_variant(properties: dict[str, str]) -> str:
 
 
 # Device-reported kernel versions are single-line tokens, never free-form text.
-KERNEL_RELEASE_PATTERN = re.compile(r"[A-Za-z0-9][A-Za-z0-9._+\\-]{0,159}", re.ASCII)
+KERNEL_RELEASE_PATTERN = re.compile(r"[A-Za-z0-9][A-Za-z0-9._+-]{0,159}", re.ASCII)
 
 
 def collect_minimal(serial: str) -> dict[str, object]:
