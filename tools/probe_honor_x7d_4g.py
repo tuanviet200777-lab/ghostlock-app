@@ -93,6 +93,26 @@ def classify_variant(properties: dict[str, str]) -> str:
     return "unknown_device"
 
 
+
+# Device-reported kernel versions are single-line tokens, never free-form text.
+KERNEL_RELEASE_PATTERN = re.compile(r"[A-Za-z0-9][A-Za-z0-9._+-]{0,159}", re.ASCII)
+
+
+def collect_minimal(serial: str) -> dict[str, object]:
+    """Only read the live kernel release. Do not query build properties."""
+    release = adb(("shell", "uname", "-r"), serial)
+    if not KERNEL_RELEASE_PATTERN.fullmatch(release):
+        raise RuntimeError("ADB returned an invalid kernel release")
+    return {
+        "schema": "honor-x7d-4g-readonly-v1",
+        "kernel_release": release,
+        "variant_classification": "not_measured",
+        "properties": {},
+        "support_status": "UNVERIFIED_DO_NOT_RUN_EXPLOIT",
+        "note": "Kernel release text only; firmware authenticity and root support unverified.",
+    }
+
+
 def collect(serial: str) -> dict[str, object]:
     properties = {key: adb(("shell", "getprop", key), serial) for key in PROPERTY_KEYS}
     return {
@@ -115,10 +135,14 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
         "--serial",
         help="Select one connected ADB device (the serial is not in the report)",
     )
+    parser.add_argument(
+        "--minimal", action="store_true",
+        help="Only read uname -r; do not collect build properties, fingerprint, or model",
+    )
     opts = parser.parse_args(argv)
     try:
         selected = select_serial(opts.serial)
-        report = collect(selected)
+        report = collect_minimal(selected) if opts.minimal else collect(selected)
     except FileNotFoundError:
         print("Error: adb not found; install Android platform-tools", file=sys.stderr)
         return 1

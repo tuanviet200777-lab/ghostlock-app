@@ -1,0 +1,64 @@
+name: HONOR firmware analysis tools (read-only)
+
+on:
+  push:
+    branches:
+      - tools/honor-x7d-firmware-readonly-analysis
+    paths:
+      - ".devcontainer/**"
+      - "tools/inspect_honor_firmware.py"
+      - "tools/test_inspect_honor_firmware.py"
+      - "tools/probe_honor_x7d_4g.py"
+      - "tools/test_probe_honor_x7d_4g.py"
+      - ".github/workflows/honor-firmware-tools.yml"
+  pull_request:
+    paths:
+      - ".devcontainer/**"
+      - "tools/inspect_honor_firmware.py"
+      - "tools/test_inspect_honor_firmware.py"
+      - "tools/probe_honor_x7d_4g.py"
+      - "tools/test_probe_honor_x7d_4g.py"
+      - ".github/workflows/honor-firmware-tools.yml"
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  test-readonly-tools:
+    name: Python inspection tests and devcontainer syntax
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Check out source
+        uses: actions/checkout@v7
+      - name: Set up Python 3.12
+        uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+      - name: Check Codespaces configuration syntax
+        run: |
+          python -m json.tool .devcontainer/devcontainer.json > /dev/null
+          bash -n .devcontainer/post-create.sh
+      - name: Verify offline firmware inspection
+        run: python -m unittest discover -s tools -p 'test_inspect_honor_firmware.py' -v
+      - name: Verify read-only ADB probe
+        run: python -m unittest discover -s tools -p 'test_probe_honor_x7d_4g.py' -v
+
+  verify-devcontainer-build:
+    name: Build Codespaces image and run offline checks
+    if: github.event_name == 'pull_request' || github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    steps:
+      - name: Check out source
+        uses: actions/checkout@v7
+      - name: Build real Dev Container and check Python/Rust inside
+        uses: devcontainers/ci@v0.3
+        with:
+          push: never
+          runCmd: bash .devcontainer/post-create.sh
