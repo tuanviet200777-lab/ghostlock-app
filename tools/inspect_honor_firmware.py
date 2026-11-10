@@ -190,6 +190,57 @@ def build_report(opts: argparse.Namespace) -> dict[str, Any]:
     return report
 
 
+
+def safe_summary_token(value: Any) -> str:
+    """Only permit nonidentifying, single-line version/identity tokens."""
+    if not isinstance(value, str) or not 1 <= len(value) <= 160:
+        return "(khong ro)"
+    if not re.fullmatch(r"[A-Za-z0-9._+\-]+", value):
+        return "(khong ro)"
+    return value
+
+
+def summarize_identity(report: dict[str, Any]) -> str:
+    """Vietnamese evidence summary. Never imply functional/root support."""
+    boot = report["boot"]
+    kernel = boot["kernel"]
+    releases = kernel.get("release_candidates", [])
+    release_text = ", ".join(safe_summary_token(x) for x in releases) if releases else "(khong tim thay)"
+    expected = safe_summary_token(report.get("expected_build_owner_confirmed"))
+    version_tag = report.get("version_tag")
+    versions = version_tag.get("version_strings", []) if isinstance(version_tag, dict) else []
+    if version_tag is None:
+        tag_status = "Chua cung cap version tag"
+    elif expected in versions:
+        tag_status = "Tim thay chuoi phien ban du kien trong file tag"
+    else:
+        tag_status = "Khong tim thay chuoi phien ban du kien trong file tag"
+    comparison = report.get("device_comparison")
+    if comparison is None:
+        device_status = "CHUA DOI CHIEU: Khong co ADB report do truc tiep tu dien thoai"
+    else:
+        match = comparison.get("kernel_release_match")
+        if match == "match":
+            device_status = "TRUNG CHUOI kernel release (KHONG chung minh ho tro root)"
+        elif match == "mismatch":
+            device_status = "KHAC CHUOI kernel release (can kiem tra nguon firmware)"
+        else:
+            device_status = "KHONG DU DU LIEU de so sanh kernel release"
+    lines = [
+        "BAO CAO DOI CHIEU FIRMWARE HONOR (CHI DOC)",
+        f"MagicOS du kien (chu may cung cap): {expected}",
+        f"Android boot header: v{boot.get('header_version', 'unknown')}",
+        f"SHA-256 boot file: {safe_summary_token(boot.get('sha256'))}",
+        f"Kernel release trong boot file: {release_text}",
+        f"Version tag: {tag_status}",
+        f"Ket qua voi dien thoai: {device_status}",
+        "Tinh trang GhostLock/root: CHUA DUOC KIEM CHUNG",
+        "Gioi han: Header/chuoi version khong xac thuc firmware, chu ky AVB,",
+        "khong chung minh kernel dang chay cung byte, lo hong hay root thanh cong.",
+        "Khong ghi, flash, chay exploit, tai firmware len mang hoac truy van thiet bi.",
+    ]
+    return "\n".join(lines) + "\n"
+
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--boot", required=True, help="Uploaded Android v3/v4 boot image")
@@ -199,14 +250,19 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--device-report", help="Optional JSON from probe_honor_x7d_4g.py")
     parser.add_argument("--expected-build", default="9.0.0.226", help="Owner-confirmed build label")
     parser.add_argument("--out", help="Local JSON output file (stdout by default); never commit private reports")
+    parser.add_argument("--summary-out", help="Optional local Vietnamese evidence summary text file")
     opts = parser.parse_args(argv)
     try:
+        if opts.summary_out and opts.out and Path(opts.summary_out).resolve() == Path(opts.out).resolve():
+            raise ValueError("JSON and summary output paths must be different")
         result = build_report(opts)
         rendered = json.dumps(result, indent=2, ensure_ascii=False) + "\n"
         if opts.out:
             Path(opts.out).write_text(rendered, encoding="utf-8")
         else:
             sys.stdout.write(rendered)
+        if opts.summary_out:
+            Path(opts.summary_out).write_text(summarize_identity(result), encoding="utf-8")
     except (OSError, ValueError, json.JSONDecodeError) as exc:
         print(f"Analysis failed: {exc}", file=sys.stderr)
         return 1
