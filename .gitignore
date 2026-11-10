@@ -19,3 +19,6 @@ target/
 /.codex/
 /src/.codex/config.toml
 /ghostlock *
+
+# Codespaces analysis inputs and local reports; never commit uploaded firmware.
+/.ghostlock-private/
