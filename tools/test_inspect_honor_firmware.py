@@ -126,5 +126,76 @@ class FirmwareInspectorTests(unittest.TestCase):
         self.assertEqual(record["version_tag"]["version_strings"], ["9.0.0.226"])
 
 
+    def test_summary_file_only_never_claims_root(self):
+        img = self.fixture_boot()
+        identity = {
+            "boot": tool.inspect_boot(img),
+            "expected_build_owner_confirmed": "9.0.0.226",
+            "version_tag": None,
+            "device_comparison": None,
+        }
+        text = tool.summarize_identity(identity)
+        self.assertIn("CHUA DOI CHIEU", text)
+        self.assertIn("CHUA DUOC KIEM CHUNG", text)
+        self.assertIn("5.15.194-test-kernel", text)
+        self.assertNotIn("root thanh cong.", text.split("Tinh trang GhostLock/root: ")[1].splitlines()[0])
+
+    def test_summary_differentiates_match_mismatch_unknown(self):
+        img = self.fixture_boot()
+        identity = {
+            "boot": tool.inspect_boot(img),
+            "expected_build_owner_confirmed": "9.0.0.226",
+            "version_tag": {"version_strings": ["9.0.0.226"]},
+            "device_comparison": None,
+        }
+        for result, marker in (
+            ("match", "TRUNG CHUOI"),
+            ("mismatch", "KHAC CHUOI"),
+            ("unknown", "KHONG DU DU LIEU"),
+        ):
+            with self.subTest(result=result):
+                identity["device_comparison"] = {"kernel_release_match": result}
+                text = tool.summarize_identity(identity)
+                self.assertIn(marker, text)
+                self.assertIn("CHUA DUOC KIEM CHUNG", text)
+
+    def test_summary_excludes_untrusted_private_fields(self):
+        img = self.fixture_boot()
+        identity = {
+            "boot": tool.inspect_boot(img),
+            "expected_build_owner_confirmed": "9.0.0.226",
+            "version_tag": None,
+            "device_comparison": {
+                "kernel_release_match": "match",
+                "device_kernel_release": "imei=secret\n",
+                "ro.build.fingerprint": "PRIVATE_FINGERPRINT_DO_NOT_LEAK",
+                "serial": "PRIVATE_SERIAL_DO_NOT_LEAK",
+            },
+        }
+        text = tool.summarize_identity(identity)
+        self.assertNotIn("PRIVATE_FINGERPRINT_DO_NOT_LEAK", text)
+        self.assertNotIn("PRIVATE_SERIAL_DO_NOT_LEAK", text)
+        self.assertNotIn("imei=secret", text)
+
+    def test_cli_optional_summary_and_json_remain_separate(self):
+        img = self.fixture_boot()
+        json_path = self.folder / "report.json"
+        summary_path = self.folder / "summary.txt"
+        self.assertEqual(
+            tool.main(["--boot", str(img), "--out", str(json_path),
+                       "--summary-out", str(summary_path)]), 0
+        )
+        self.assertEqual(json.loads(json_path.read_text())["root_support"],
+                         "UNVERIFIED_NO_EXPLOIT_ATTEMPTED")
+        text = summary_path.read_text(encoding="utf-8")
+        self.assertIn("CHUA DOI CHIEU", text)
+        self.assertIn("CHUA DUOC KIEM CHUNG", text)
+        self.assertEqual(
+            tool.main(["--boot", str(img), "--out", str(json_path),
+                       "--summary-out", str(json_path)]), 1
+        )
+
+
+
 if __name__ == "__main__":
     unittest.main()
