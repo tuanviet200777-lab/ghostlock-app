@@ -64,6 +64,39 @@ sao chép một bản đã rà soát vào thư mục riêng trên Codespace rồ
 tùy chọn `--device-report`. Codespaces trên cloud **không trực tiếp thấy
 cổng USB** của điện thoại cắm vào PC thông thường.
 
+## Đối chiếu kernel thực tế (ít thông tin nhất)
+
+Codespaces không thể tự đọc USB điện thoại nối với máy tính Windows. Sau khi
+đã cài **Android platform-tools** và Python trên máy tính của bạn, bật gỡ lỗi
+USB và chấp thuận kết nối trên chính điện thoại của bạn. Trong **Command
+Prompt (cmd.exe)** tại thư mục bản sao repository, chạy:
+
+```bat
+if not exist build mkdir build
+py -3 tools\probe_honor_x7d_4g.py --minimal > build\honor-kernel-minimal.json
+```
+
+Chế độ `--minimal` chỉ kiểm tra thiết bị ADB được cấp quyền và đọc `uname -r`;
+không truy vấn serial, fingerprint, thuộc tính hãng hoặc dữ liệu cá nhân.
+Đọc lại file JSON trước khi chia sẻ. File vẫn có chuỗi phiên bản kernel nên
+chỉ chuyển lên đám mây khi bạn đồng ý với việc lưu trữ này.
+
+Nếu muốn đối chiếu trên Codespaces, tải **riêng file JSON tối giản** đã kiểm
+tra vào `/workspaces/ghostlock-app/.ghostlock-private/reports/` với tên
+`honor-kernel-minimal.json` rồi chạy:
+
+```bash
+python3 tools/inspect_honor_firmware.py \
+  --boot "/workspaces/ghostlock-app/.ghostlock-private/firmware/boot(2).img" \
+  --device-report "/workspaces/ghostlock-app/.ghostlock-private/reports/honor-kernel-minimal.json" \
+  --out "/workspaces/ghostlock-app/.ghostlock-private/reports/compared.json" \
+  --summary-out "/workspaces/ghostlock-app/.ghostlock-private/reports/compared.txt"
+```
+
+Trong báo cáo này, `not_measured` nghĩa là **không thu thập thuộc tính bản
+build**, không phải MagicOS không khớp. `match` chỉ xác nhận **chuỗi phiên
+bản kernel giống nhau**, chưa xác nhận có thể root.
+
 ## Kiểm tra môi trường
 
 ```bash
